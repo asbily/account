@@ -164,7 +164,7 @@ img {
   background: var(--black);
   color: var(--white);
 
-  border-radius: 9px;
+  border-radius: 99px;
 
   font-size: 16px;
 
@@ -295,11 +295,13 @@ img {
   letter-spacing: 2px;
 
   color: #777;
+
+  text-transform: uppercase;
 }
 
 
 .hero-label {
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 
@@ -308,10 +310,9 @@ img {
 ===================================================== */
 
 .button {
-  min-height: 50px;
+  min-height: 52px;
 
-  padding:
-    0 23px;
+  padding: 0 24px;
 
   display: inline-flex;
 
@@ -319,9 +320,9 @@ img {
 
   justify-content: center;
 
-  border-radius: 10px;
+  border-radius: 12px;
 
-  font-size: 14px;
+  font-size: 15px;
 
   font-weight: 750;
 
@@ -344,6 +345,7 @@ img {
   background: var(--black);
 
   color: var(--white);
+
   border: none;
 }
 
@@ -366,37 +368,41 @@ img {
 
 
 /* =====================================================
-   SIGNUP FORM STYLES
+   SIGNUP FORM STYLES (FIXED & REFINED)
 ===================================================== */
 
 .signup-section {
-  padding: 80px 0;
+  padding: 60px 0;
   display: flex;
   justify-content: center;
 }
 
 .signup-container {
-  max-width: 580px;
+  max-width: 540px;
+  width: 100%;
 }
 
 .form-wrapper {
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 50px;
+  padding: 45px 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
 }
 
 .signup-title {
-  font-size: clamp(32px, 5vw, 44px);
-  line-height: 1.1;
-  letter-spacing: -2px;
-  margin-bottom: 12px;
+  font-size: clamp(28px, 4vw, 38px);
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  margin-bottom: 10px;
+  font-weight: 800;
 }
 
 .signup-subtitle {
   color: var(--muted);
   font-size: 15px;
   margin-bottom: 30px;
+  line-height: 1.5;
 }
 
 .auth-form {
@@ -408,19 +414,22 @@ img {
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: 16px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
 }
 
 .form-group label {
   font-size: 13px;
   font-weight: 700;
   color: var(--text);
+  display: block;
 }
 
 .form-group input {
@@ -431,37 +440,57 @@ img {
   border-radius: 10px;
   font-size: 14px;
   outline: none;
-  transition: border-color var(--transition);
+  background: #fafafa;
+  color: var(--text);
+  font-family: inherit;
+  transition: all var(--transition);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-group input::placeholder {
+  color: #aaa;
 }
 
 .form-group input:focus {
   border-color: var(--black);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 .form-checkbox {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   font-size: 13px;
   color: var(--muted);
+  margin-top: 5px;
 }
 
 .form-checkbox input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  margin-top: 2px;
   cursor: pointer;
+  accent-color: var(--black);
+  border-radius: 4px;
+}
+
+.form-checkbox label {
+  cursor: pointer;
+  user-select: none;
 }
 
 .form-checkbox a {
   text-decoration: underline;
   color: var(--black);
+  font-weight: 600;
 }
 
 .error-msg {
-  color: #e53e3e;
+  color: #dc2626;
   font-size: 12px;
   display: none;
+  font-weight: 600;
 }
 
 .form-submit-btn {
@@ -473,7 +502,7 @@ img {
   text-align: center;
   font-size: 14px;
   color: var(--muted);
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .form-footer-text a {
@@ -488,11 +517,11 @@ img {
 ===================================================== */
 
 .section {
-  padding: 90px 0;
+  padding: 80px 0;
 }
 
 .global-box {
-  padding: 70px;
+  padding: 60px 50px;
 
   background: var(--black);
 
@@ -505,23 +534,18 @@ img {
 .global-box h2 {
   max-width: 900px;
 
-  margin:
-    18px 0 25px;
+  margin: 16px 0 20px;
 
-  font-size:
-    clamp(
-      35px,
-      5vw,
-      60px
-    );
+  font-size: clamp(32px, 5vw, 54px);
 
-  line-height: 1;
+  line-height: 1.05;
 
-  letter-spacing: -3px;
+  letter-spacing: -2px;
 }
 
 
 .global-box h2 span {
+  display: block;
   color: #777;
 }
 
@@ -530,6 +554,7 @@ img {
   max-width: 680px;
 
   color: #aaa;
+  font-size: 16px;
 }
 
 
@@ -549,8 +574,7 @@ img {
 .footer-grid {
   display: grid;
 
-  grid-template-columns:
-    2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
 
   gap: 50px;
 }
@@ -610,8 +634,7 @@ img {
 
   padding-top: 25px;
 
-  border-top:
-    1px solid #222;
+  border-top: 1px solid #222;
 }
 
 
@@ -666,8 +689,7 @@ img {
 .reveal {
   opacity: 0;
 
-  transform:
-    translateY(25px);
+  transform: translateY(25px);
 
   transition:
     opacity 0.7s ease,
@@ -678,8 +700,7 @@ img {
 .reveal.visible {
   opacity: 1;
 
-  transform:
-    translateY(0);
+  transform: translateY(0);
 }
 
 
@@ -751,8 +772,8 @@ img {
   }
 
   .global-box h2 {
-    font-size: 40px;
-    letter-spacing: -2px;
+    font-size: 38px;
+    letter-spacing: -1.5px;
   }
 
   .footer-grid {
@@ -775,6 +796,7 @@ img {
     grid-template-columns: 1fr;
   }
 }
+
 
 /* =====================================================
    REDUCED MOTION
