@@ -1,7 +1,14 @@
 /* =====================================================
    ASBILY VERIFY EMAIL PAGE
-   Complete JavaScript
+   Complete JavaScript with Firebase Authentication Integration
 ===================================================== */
+
+import { auth } from "../auth/firebase.js";
+import { 
+  onAuthStateChanged, 
+  sendEmailVerification, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -12,8 +19,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const header = document.getElementById("header");
   const menuButton = document.getElementById("menuButton");
   const navigation = document.getElementById("navigation");
-  const verifyForm = document.getElementById("verifyForm");
+  const checkVerifiedBtn = document.getElementById("checkVerifiedBtn");
   const resendBtn = document.getElementById("resendBtn");
+  const userEmailText = document.getElementById("userEmailText");
+
+  let currentUser = null;
 
 
   /* ===================================================
@@ -91,53 +101,87 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ===================================================
-     FORM VALIDATION & HANDLING
+     FIREBASE AUTH STATE & VERIFICATION CHECK
   =================================================== */
 
-  if (verifyForm) {
-    verifyForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      let isValid = true;
-      const otpCode = document.getElementById("otpCode");
-
-      // Clear previous error messages
-      document.querySelectorAll(".error-msg").forEach(el => el.style.display = "none");
-
-      if (otpCode.value.trim().length !== 6) {
-        showError("otpError", "Please enter a valid 6-digit verification code");
-        isValid = false;
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      currentUser = user;
+      if (userEmailText) {
+        userEmailText.textContent = user.email;
       }
 
-      if (isValid) {
-        showCustomModal(
-          "Success", 
-          "Your email has been successfully verified!",
-          () => {
-            window.location.href = "/signin/";
-          }
-        );
-        verifyForm.reset();
+      // If already verified, redirect directly to email-verified or dashboard
+      if (user.emailVerified) {
+        window.location.href = "/email-verified/";
+      }
+    } else {
+      // If no user is logged in, redirect to signin page
+      window.location.href = "/signin/";
+    }
+  });
+
+
+  /* ===================================================
+     CHECK VERIFICATION & RESEND LOGIC
+  =================================================== */
+
+  if (checkVerifiedBtn) {
+    checkVerifiedBtn.addEventListener("click", async () => {
+      if (!currentUser) return;
+
+      checkVerifiedBtn.disabled = true;
+      checkVerifiedBtn.textContent = "Checking Status...";
+
+      try {
+        // Refresh user token to get latest emailVerified status from Firebase servers
+        await currentUser.reload();
+        
+        if (currentUser.emailVerified) {
+          showCustomModal(
+            "Email Verified!", 
+            "Your email has been successfully verified.",
+            () => {
+              window.location.href = "/email-verified/";
+            }
+          );
+        } else {
+          showCustomModal(
+            "Not Verified Yet", 
+            "Please check your inbox and click the verification link sent to your email."
+          );
+          checkVerifiedBtn.disabled = false;
+          checkVerifiedBtn.textContent = "I Have Verified — Continue";
+        }
+      } catch (error) {
+        console.error("Verification check error:", error);
+        showCustomModal("Error", "Could not check verification status. Please try again.");
+        checkVerifiedBtn.disabled = false;
+        checkVerifiedBtn.textContent = "I Have Verified — Continue";
       }
     });
   }
 
   if (resendBtn) {
-    resendBtn.addEventListener("click", (e) => {
+    resendBtn.addEventListener("click", async (e) => {
       e.preventDefault();
-      showCustomModal(
-        "Code Resent", 
-        "A new verification code has been sent to your email address."
-      );
-    });
-  }
+      if (!currentUser) return;
 
-  function showError(elementId, message) {
-    const errorEl = document.getElementById(elementId);
-    if (errorEl) {
-      errorEl.textContent = message;
-      errorEl.style.display = "block";
-    }
+      try {
+        await sendEmailVerification(currentUser);
+        showCustomModal(
+          "Link Resent", 
+          "A new verification link has been sent to your email address."
+        );
+      } catch (error) {
+        console.error("Resend error:", error.code, error.message);
+        let errorMsg = "Failed to resend verification email. Please try again later.";
+        if (error.code === "auth/too-many-requests") {
+          errorMsg = "Too many requests. Please wait before trying again.";
+        }
+        showCustomModal("Error", errorMsg);
+      }
+    });
   }
 
   // Custom Modal Function to keep website theme & colors exact
