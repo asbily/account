@@ -26,23 +26,23 @@
   <meta name="creator" content="Arif Billah">
   <meta name="publisher" content="Asbily Platforms">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-  <link rel="canonical" href="/reset-password/">
+  <link rel="canonical" href="https://account.asbily.com/reset-password/">
 
   <!-- Favicon & Site Icons -->
-  <link rel="icon" type="image/svg+xml" href="/asbily.svg">
-  <link rel="shortcut icon" type="image/svg+xml" href="/asbily.svg">
-  <link rel="apple-touch-icon" href="/asbily.svg">
+  <link rel="icon" type="image/svg+xml" href="../asbily.svg">
+  <link rel="shortcut icon" type="image/svg+xml" href="../asbily.svg">
+  <link rel="apple-touch-icon" href="../asbily.svg">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Asbily Platforms">
-  <meta property="og:url" content="/reset-password/">
+  <meta property="og:url" content="https://account.asbily.com/reset-password/">
   <meta property="og:title" content="Set New Password - Asbily Account | Asbily Platforms">
   <meta
     property="og:description"
     content="Set a new password for your Asbily Account to access Asbily Platforms."
   >
-  <meta property="og:image" content="/asbily.svg">
+  <meta property="og:image" content="../asbily.svg">
   <meta property="og:image:alt" content="Asbily Platforms Logo">
   <meta property="og:locale" content="en_US">
 
@@ -50,13 +50,13 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@asbilyltd">
   <meta name="twitter:creator" content="@arifbillah">
-  <meta name="twitter:url" content="/reset-password/">
+  <meta name="twitter:url" content="https://account.asbily.com/reset-password/">
   <meta name="twitter:title" content="Set New Password - Asbily Account | Asbily Platforms">
   <meta
     name="twitter:description"
     content="Set a new password for your Asbily Account to access Asbily Platforms."
   >
-  <meta name="twitter:image" content="/asbily.svg">
+  <meta name="twitter:image" content="../asbily.svg">
 
   <!-- Brand & Mobile Theme -->
   <meta name="theme-color" content="#000000">
@@ -76,12 +76,12 @@
         "url": "https://www.asbily.com/",
         "logo": {
           "@type": "ImageObject",
-          "url": "/asbily.svg",
+          "url": "https://account.asbily.com/asbily.svg",
           "caption": "Asbily Platforms Logo"
         },
         "founder": {
           "@type": "Person",
-          "@id": "/#ceo",
+          "@id": "https://account.asbily.com/#ceo",
           "name": "Arif Billah",
           "jobTitle": "CEO & Founder",
           "url": "https://www.asbily.com/company/founder/"
@@ -91,11 +91,11 @@
       },
       {
         "@type": "WebPage",
-        "@id": "/reset-password/#webpage",
-        "url": "/reset-password/",
+        "@id": "https://account.asbily.com/reset-password/#webpage",
+        "url": "https://account.asbily.com/reset-password/",
         "name": "Set New Password - Asbily Account | Asbily Platforms",
         "isPartOf": {
-          "@id": "/#website"
+          "@id": "https://account.asbily.com/#website"
         },
         "description": "Set a new password for your Asbily Account to access Asbily Platforms."
       }
@@ -123,7 +123,7 @@
       aria-label="Asbily Account Home"
     >
       <img
-        src="/asbily.svg"
+        src="../asbily.svg"
         alt="Asbily Platforms Logo"
         class="logo-img"
         width="35"
@@ -199,7 +199,9 @@
           <span class="error-msg" id="confirmPasswordError"></span>
         </div>
 
-        <button type="submit" class="button button-black form-submit-btn">
+        <span class="error-msg" id="generalError" style="margin-top: 5px;"></span>
+
+        <button type="submit" id="submitBtn" class="button button-black form-submit-btn">
           Update Password
         </button>
 
@@ -247,7 +249,7 @@
 
 </main>
 
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>

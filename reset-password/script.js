@@ -1,7 +1,10 @@
 /* =====================================================
    ASBILY RESET PASSWORD PAGE
-   Complete JavaScript
+   Complete JavaScript with Firebase Authentication Integration
 ===================================================== */
+
+import { auth } from "../auth/firebase.js";
+import { confirmPasswordReset } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -13,6 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuButton = document.getElementById("menuButton");
   const navigation = document.getElementById("navigation");
   const resetForm = document.getElementById("resetForm");
+  const submitBtn = document.getElementById("submitBtn");
+
+  // Extract oobCode from URL query parameters (sent by Firebase email link)
+  const urlParams = new URLSearchParams(window.location.search);
+  const oobCode = urlParams.get("oobCode");
 
 
   /* ===================================================
@@ -90,11 +98,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ===================================================
-     FORM VALIDATION & HANDLING
+     FORM VALIDATION & FIREBASE PASSWORD CONFIRMATION
   =================================================== */
 
   if (resetForm) {
-    resetForm.addEventListener("submit", (e) => {
+    resetForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       let isValid = true;
@@ -103,7 +111,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const confirmPassword = document.getElementById("confirmPassword");
 
       // Clear previous error messages
-      document.querySelectorAll(".error-msg").forEach(el => el.style.display = "none");
+      document.querySelectorAll(".error-msg").forEach(el => {
+        el.textContent = "";
+        el.style.display = "none";
+      });
+
+      if (!oobCode) {
+        showError("generalError", "Invalid or missing password reset link code. Please request a new link.");
+        return;
+      }
 
       if (newPassword.value.length < 8) {
         showError("newPasswordError", "Password must be at least 8 characters");
@@ -115,7 +131,16 @@ document.addEventListener("DOMContentLoaded", () => {
         isValid = false;
       }
 
-      if (isValid) {
+      if (!isValid) return;
+
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Updating Password...";
+
+      try {
+        // Confirm password reset with Firebase Action Code
+        await confirmPasswordReset(auth, oobCode, newPassword.value);
+
         showCustomModal(
           "Success", 
           "Your password has been updated successfully!",
@@ -124,6 +149,22 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         );
         resetForm.reset();
+
+      } catch (error) {
+        console.error("Password Reset Confirmation Error:", error.code, error.message);
+        let errorMsg = "Failed to update password. The link may have expired.";
+
+        if (error.code === "auth/expired-action-code") {
+          errorMsg = "The password reset link has expired. Please request a new one.";
+        } else if (error.code === "auth/invalid-action-code") {
+          errorMsg = "The password reset link is invalid or has already been used.";
+        } else if (error.code === "auth/weak-password") {
+          errorMsg = "Password is too weak. Choose a stronger password.";
+        }
+
+        showError("generalError", errorMsg);
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
       }
     });
   }
