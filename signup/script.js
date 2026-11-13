@@ -1,7 +1,14 @@
 /* =====================================================
    ASBILY SIGNUP PAGE
-   Complete JavaScript
+   Complete JavaScript with Firebase Authentication Integration
 ===================================================== */
+
+import { auth } from "../auth/firebase.js";
+import { 
+  createUserWithEmailAndPassword, 
+  sendEmailVerification, 
+  updateProfile 
+} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -12,18 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const header = document.getElementById("header");
   const menuButton = document.getElementById("menuButton");
   const navigation = document.getElementById("navigation");
-  const backToTop = document.getElementById("backToTop");
-  const currentYear = document.getElementById("currentYear");
   const signupForm = document.getElementById("signupForm");
-
-
-  /* ===================================================
-     CURRENT YEAR
-  =================================================== */
-
-  if (currentYear) {
-    currentYear.textContent = new Date().getFullYear();
-  }
+  const submitBtn = document.getElementById("submitBtn");
 
 
   /* ===================================================
@@ -101,25 +98,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ===================================================
-     BACK TO TOP
-  =================================================== */
-
-  if (backToTop) {
-    backToTop.addEventListener("click", () => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    });
-  }
-
-
-  /* ===================================================
-     FORM VALIDATION & HANDLING
+     FORM VALIDATION & FIREBASE SIGNUP
   =================================================== */
 
   if (signupForm) {
-    signupForm.addEventListener("submit", (e) => {
+    signupForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       let isValid = true;
@@ -132,8 +115,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const confirmPassword = document.getElementById("confirmPassword");
       const terms = document.getElementById("terms");
 
-      // Clear errors
-      document.querySelectorAll(".error-msg").forEach(el => el.style.display = "none");
+      // Clear previous error messages
+      document.querySelectorAll(".error-msg").forEach(el => {
+        el.textContent = "";
+        el.style.display = "none";
+      });
 
       if (!firstName.value.trim()) {
         showError("firstNameError", "First name is required");
@@ -165,9 +151,45 @@ document.addEventListener("DOMContentLoaded", () => {
         isValid = false;
       }
 
-      if (isValid) {
-        alert("Account created successfully!");
-        signupForm.reset();
+      if (!isValid) return;
+
+      // Disable submit button & show loading text
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Creating Account...";
+
+      try {
+        // Create user with Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(auth, email.value.trim(), password.value);
+        const user = userCredential.user;
+
+        // Update user profile with full name
+        const fullName = `${firstName.value.trim()} ${lastName.value.trim()}`;
+        await updateProfile(user, {
+          displayName: fullName
+        });
+
+        // Send Email Verification
+        await sendEmailVerification(user);
+
+        // Redirect to Verify Email page
+        window.location.href = "/verify-email/";
+
+      } catch (error) {
+        console.error("Sign Up Error:", error.code, error.message);
+        let errorMsg = "Failed to create account. Please try again.";
+
+        if (error.code === "auth/email-already-in-use") {
+          errorMsg = "This email address is already registered.";
+        } else if (error.code === "auth/invalid-email") {
+          errorMsg = "Invalid email address format.";
+        } else if (error.code === "auth/weak-password") {
+          errorMsg = "Password is too weak. Choose a stronger password.";
+        }
+
+        showError("generalError", errorMsg);
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
       }
     });
   }

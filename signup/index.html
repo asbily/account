@@ -26,23 +26,23 @@
   <meta name="creator" content="Arif Billah">
   <meta name="publisher" content="Asbily Platforms">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-  <link rel="canonical" href="/signup/">
+  <link rel="canonical" href="https://account.asbily.com/signup/">
 
   <!-- Favicon & Site Icons -->
-  <link rel="icon" type="image/svg+xml" href="/asbily.svg">
-  <link rel="shortcut icon" type="image/svg+xml" href="/asbily.svg">
-  <link rel="apple-touch-icon" href="/asbily.svg">
+  <link rel="icon" type="image/svg+xml" href="../asbily.svg">
+  <link rel="shortcut icon" type="image/svg+xml" href="../asbily.svg">
+  <link rel="apple-touch-icon" href="../asbily.svg">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Asbily Platforms">
-  <meta property="og:url" content="/signup/">
+  <meta property="og:url" content="https://account.asbily.com/signup/">
   <meta property="og:title" content="Create Asbily Account - Asbily Platforms | Business Company">
   <meta
     property="og:description"
     content="Your Asbily account connects you with Asbily Platforms and its digital services."
   >
-  <meta property="og:image" content="/asbily.svg">
+  <meta property="og:image" content="../asbily.svg">
   <meta property="og:image:alt" content="Asbily Platforms Logo">
   <meta property="og:locale" content="en_US">
 
@@ -50,13 +50,13 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@asbilyltd">
   <meta name="twitter:creator" content="@arifbillah">
-  <meta name="twitter:url" content="/signup/">
+  <meta name="twitter:url" content="https://account.asbily.com/signup/">
   <meta name="twitter:title" content="Create Asbily Account - Asbily Platforms | Business Company">
   <meta
     name="twitter:description"
     content="Your Asbily account connects you with Asbily Platforms and its digital services."
   >
-  <meta name="twitter:image" content="/asbily.svg">
+  <meta name="twitter:image" content="../asbily.svg">
 
   <!-- Brand & Mobile Theme -->
   <meta name="theme-color" content="#000000">
@@ -76,12 +76,12 @@
         "url": "https://www.asbily.com/",
         "logo": {
           "@type": "ImageObject",
-          "url": "/asbily.svg",
+          "url": "https://account.asbily.com/asbily.svg",
           "caption": "Asbily Platforms Logo"
         },
         "founder": {
           "@type": "Person",
-          "@id": "/#ceo",
+          "@id": "https://account.asbily.com/#ceo",
           "name": "Arif Billah",
           "jobTitle": "CEO & Founder",
           "url": "https://www.asbily.com/company/founder/"
@@ -90,7 +90,7 @@
         "foundingDate": "2026",
         "sameAs": [
           "https://www.asbily.com/",
-          "/",
+          "https://account.asbily.com/",
           "https://store.asbily.com/",
           "https://services.asbily.com/",
           "https://tools.asbily.com/",
@@ -103,11 +103,11 @@
       },
       {
         "@type": "WebPage",
-        "@id": "/signup/#webpage",
-        "url": "/signup/",
+        "@id": "https://account.asbily.com/signup/#webpage",
+        "url": "https://account.asbily.com/signup/",
         "name": "Create Asbily Account - Asbily Platforms | Business Company",
         "isPartOf": {
-          "@id": "/#website"
+          "@id": "https://account.asbily.com/#website"
         },
         "about": {
           "@id": "https://www.asbily.com/#organization"
@@ -138,7 +138,7 @@
       aria-label="Asbily Account Home"
     >
       <img
-        src="/asbily.svg"
+        src="../asbily.svg"
         alt="Asbily Platforms Logo"
         class="logo-img"
         width="35"
@@ -244,8 +244,9 @@
           </label>
         </div>
         <span class="error-msg" id="termsError"></span>
+        <span class="error-msg" id="generalError" style="margin-top: 5px;"></span>
 
-        <button type="submit" class="button button-black form-submit-btn">
+        <button type="submit" id="submitBtn" class="button button-black form-submit-btn">
           Create Account
         </button>
 
@@ -293,7 +294,7 @@
 
 </main>
 
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
