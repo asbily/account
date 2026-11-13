@@ -1,7 +1,16 @@
 /* =====================================================
    ASBILY SIGNIN PAGE
-   Complete JavaScript
+   Complete JavaScript with Firebase Integration
 ===================================================== */
+
+import { auth } from "../auth/firebase.js";
+import { 
+  signInWithEmailAndPassword, 
+  setPersistence, 
+  browserLocalPersistence, 
+  browserSessionPersistence,
+  signOut 
+} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -13,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuButton = document.getElementById("menuButton");
   const navigation = document.getElementById("navigation");
   const signinForm = document.getElementById("signinForm");
+  const submitBtn = document.getElementById("submitBtn");
 
 
   /* ===================================================
@@ -90,20 +100,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ===================================================
-     FORM VALIDATION & HANDLING
+     FORM VALIDATION & FIREBASE AUTHENTICATION
   =================================================== */
 
   if (signinForm) {
-    signinForm.addEventListener("submit", (e) => {
+    signinForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       let isValid = true;
 
       const email = document.getElementById("email");
       const password = document.getElementById("password");
+      const remember = document.getElementById("remember");
 
       // Clear previous error messages
-      document.querySelectorAll(".error-msg").forEach(el => el.style.display = "none");
+      document.querySelectorAll(".error-msg").forEach(el => {
+        el.textContent = "";
+        el.style.display = "none";
+      });
 
       if (!email.value.trim() || !validateEmail(email.value)) {
         showError("emailError", "Please enter a valid email address");
@@ -115,9 +129,47 @@ document.addEventListener("DOMContentLoaded", () => {
         isValid = false;
       }
 
-      if (isValid) {
-        alert("Signed in successfully!");
-        signinForm.reset();
+      if (!isValid) return;
+
+      // Disable button & show loading state
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Signing In...";
+
+      try {
+        // Set persistence based on remember checkbox
+        const persistence = remember.checked ? browserLocalPersistence : browserSessionPersistence;
+        await setPersistence(auth, persistence);
+
+        // Firebase Sign In
+        const userCredential = await signInWithEmailAndPassword(auth, email.value.trim(), password.value);
+        const user = userCredential.user;
+
+        // Check Email Verification Status
+        if (!user.emailVerified) {
+          // If email is not verified, redirect to verify-email page
+          window.location.href = "/verify-email/";
+          return;
+        }
+
+        // Successfully verified & signed in -> Redirect to Dashboard
+        window.location.href = "https://myaccount.asbily.com/";
+
+      } catch (error) {
+        console.error("Sign In Error:", error.code, error.message);
+        let errorMsg = "Failed to sign in. Please check your credentials.";
+
+        if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
+          errorMsg = "Invalid email or password.";
+        } else if (error.code === "auth/too-many-requests") {
+          errorMsg = "Access to this account has been temporarily disabled due to many failed login attempts. Try again later.";
+        } else if (error.code === "auth/invalid-email") {
+          errorMsg = "Invalid email format.";
+        }
+
+        showError("generalError", errorMsg);
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
       }
     });
   }
