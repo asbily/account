@@ -1,7 +1,10 @@
 /* =====================================================
    ASBILY FORGOT PASSWORD PAGE
-   Complete JavaScript
+   Complete JavaScript with Firebase Authentication Integration
 ===================================================== */
+
+import { auth } from "../auth/firebase.js";
+import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -13,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuButton = document.getElementById("menuButton");
   const navigation = document.getElementById("navigation");
   const forgotForm = document.getElementById("forgotForm");
+  const submitBtn = document.getElementById("submitBtn");
 
 
   /* ===================================================
@@ -90,11 +94,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ===================================================
-     FORM VALIDATION & HANDLING
+     FORM VALIDATION & FIREBASE PASSWORD RESET
   =================================================== */
 
   if (forgotForm) {
-    forgotForm.addEventListener("submit", (e) => {
+    forgotForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       let isValid = true;
@@ -102,20 +106,47 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("email");
 
       // Clear previous error messages
-      document.querySelectorAll(".error-msg").forEach(el => el.style.display = "none");
+      document.querySelectorAll(".error-msg").forEach(el => {
+        el.textContent = "";
+        el.style.display = "none";
+      });
 
       if (!email.value.trim() || !validateEmail(email.value)) {
         showError("emailError", "Please enter a valid email address");
         isValid = false;
       }
 
-      if (isValid) {
-        // Show Custom Theme Modal instead of default browser alert
+      if (!isValid) return;
+
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sending Link...";
+
+      try {
+        // Send Password Reset Email via Firebase
+        await sendPasswordResetEmail(auth, email.value.trim());
+
+        // Show Custom Theme Modal
         showCustomModal(
-          "Success", 
+          "Reset Link Sent", 
           "Password reset instructions have been sent to your email!"
         );
         forgotForm.reset();
+
+      } catch (error) {
+        console.error("Password Reset Error:", error.code, error.message);
+        let errorMsg = "Failed to send password reset email. Please try again.";
+
+        if (error.code === "auth/user-not-found") {
+          errorMsg = "No account found with this email address.";
+        } else if (error.code === "auth/invalid-email") {
+          errorMsg = "Invalid email address format.";
+        }
+
+        showError("generalError", errorMsg);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
       }
     });
   }
